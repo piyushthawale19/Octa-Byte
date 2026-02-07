@@ -9,6 +9,7 @@ A production-ready, real-time stock portfolio tracking dashboard built with Next
 ## 🚀 Features
 
 ### Core Functionality
+
 - ✅ **Real-time Stock Data**: Fetches live CMP from Yahoo Finance
 - ✅ **Financial Metrics**: P/E Ratio and Latest Earnings from Google Finance
 - ✅ **Auto-refresh**: Updates every 15 seconds automatically
@@ -17,6 +18,7 @@ A production-ready, real-time stock portfolio tracking dashboard built with Next
 - ✅ **Visual Indicators**: Color-coded profit (green) and loss (red)
 
 ### Technical Features
+
 - 🔄 **Parallel API Calls**: Uses `Promise.all()` for efficient data fetching
 - 💾 **Smart Caching**: In-memory cache with 60-second TTL to avoid rate limits
 - 🎨 **Responsive Design**: Works seamlessly on mobile, tablet, and desktop
@@ -26,52 +28,58 @@ A production-ready, real-time stock portfolio tracking dashboard built with Next
 
 ## 📋 Portfolio Table Columns
 
-| Column | Description | Source |
-|--------|-------------|--------|
-| **Particulars** | Stock name | Static data |
-| **Purchase Price** | Price at which stock was bought | Static data |
-| **Quantity (Qty)** | Number of shares owned | Static data |
-| **Investment** | Purchase Price × Qty | Calculated |
-| **Portfolio %** | Percentage of total portfolio | Calculated |
-| **NSE/BSE** | Exchange code | Static data |
-| **CMP** | Current Market Price | Yahoo Finance |
-| **Present Value** | CMP × Qty | Calculated |
-| **Gain/Loss** | Present Value - Investment | Calculated |
-| **P/E Ratio** | Price-to-Earnings ratio | Google Finance |
-| **Latest Earnings** | Recent earnings report | Google Finance |
+| Column              | Description                     | Source         |
+| ------------------- | ------------------------------- | -------------- |
+| **Particulars**     | Stock name                      | Static data    |
+| **Purchase Price**  | Price at which stock was bought | Static data    |
+| **Quantity (Qty)**  | Number of shares owned          | Static data    |
+| **Investment**      | Purchase Price × Qty            | Calculated     |
+| **Portfolio %**     | Percentage of total portfolio   | Calculated     |
+| **NSE/BSE**         | Exchange code                   | Static data    |
+| **CMP**             | Current Market Price            | Yahoo Finance  |
+| **Present Value**   | CMP × Qty                       | Calculated     |
+| **Gain/Loss**       | Present Value - Investment      | Calculated     |
+| **P/E Ratio**       | Price-to-Earnings ratio         | Google Finance |
+| **Latest Earnings** | Recent earnings report          | Google Finance |
 
 ## 🛠️ Tech Stack
 
 ### Frontend
+
 - **Framework**: Next.js 16 (App Router)
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS
 - **Icons**: Lucide React
 
 ### Backend
+
 - **Runtime**: Node.js (Next.js API Routes)
-- **Data Fetching**: 
+- **Data Fetching**:
   - `yahoo-finance2` - Yahoo Finance data
   - `cheerio` - Google Finance scraping
   - `axios` - HTTP requests
 
 ### Deployment
+
 - **Platform**: Vercel / Netlify
 - **Repository**: GitHub (public)
 
 ## 📦 Installation & Setup
 
 ### Prerequisites
+
 - Node.js 18+ installed
 - npm or yarn package manager
 
 ### Step 1: Clone the Repository
+
 ```bash
 git clone https://github.com/yourusername/portfolio-dashboard.git
 cd portfolio-dashboard
 ```
 
 ### Step 2: Install Dependencies
+
 ```bash
 npm install
 # or
@@ -79,13 +87,14 @@ yarn install
 ```
 
 ### Step 3: Configure Holdings Data
+
 Edit `data/holdings.json` to add your stock holdings:
 
 ```json
 [
   {
     "particulars": "Reliance Industries",
-    "purchasePrice": 2450.50,
+    "purchasePrice": 2450.5,
     "quantity": 10,
     "exchange": "NSE",
     "sector": "Energy",
@@ -95,10 +104,12 @@ Edit `data/holdings.json` to add your stock holdings:
 ```
 
 **Symbol Format:**
+
 - NSE stocks: `SYMBOL.NS` (e.g., `RELIANCE.NS`)
 - BSE stocks: `SYMBOL.BO` (e.g., `RELIANCE.BO`)
 
 ### Step 4: Run Development Server
+
 ```bash
 npm run dev
 # or
@@ -108,6 +119,7 @@ yarn dev
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ### Step 5: Build for Production
+
 ```bash
 npm run build
 npm start
@@ -116,12 +128,49 @@ npm start
 ## 🚀 Deployment
 
 ### Deploy to Vercel (Recommended)
-1. Push code to GitHub
-2. Go to [vercel.com](https://vercel.com)
-3. Import your repository
-4. Vercel will auto-detect Next.js and deploy
+
+#### Quick Deploy
+
+1. Push code to GitHub including the `vercel.json` configuration
+2. Go to [vercel.com](https://vercel.com) and sign in
+3. Click "Add New Project" and import your repository
+4. Vercel will auto-detect Next.js settings
+5. Click "Deploy" and wait for build to complete
+6. **Important**: Promote the staging deployment to production in Vercel dashboard
+
+#### Configuration Files
+
+- `vercel.json`: Contains deployment settings (region, function timeouts)
+- Configured for Mumbai region (bom1) for better latency with Indian stock markets
+- API timeout set to 30 seconds to handle slow external API calls
+
+#### Troubleshooting Vercel Deployments
+
+**Issue: Deployment stuck in "Staged" state**
+
+- Solution: Go to Vercel Dashboard → Deployments → Click on the staging deployment → Click "Promote to Production"
+
+**Issue: 401 Unauthorized errors**
+
+- Cause: Google Finance blocking automated requests
+- Solution: Already handled with enhanced headers and caching in the code
+- The app will gracefully degrade - still showing Yahoo Finance data (CMP)
+
+**Issue: Slow API responses (5-6 seconds)**
+
+- Fixed with:
+  - Batch processing (10 stocks at a time)
+  - Extended cache times (10 minutes for Google, 2 minutes for Yahoo)
+  - 15-second timeout protection
+  - Cached failure results to avoid repeated failed requests
+
+**Issue: Function timeout errors**
+
+- Solution: `vercel.json` sets `maxDuration: 30` for API routes
+- If still timing out, consider reducing number of stocks or upgrading Vercel plan
 
 ### Deploy to Netlify
+
 1. Push code to GitHub
 2. Go to [netlify.com](https://netlify.com)
 3. Import repository
@@ -164,6 +213,7 @@ portfolio-dashboard/
 ## 🔧 How It Works
 
 ### Data Flow
+
 1. **Static Data**: Holdings loaded from `holdings.json`
 2. **API Call**: Frontend calls `/api/stocks` every 15 seconds
 3. **Parallel Fetching**: Backend fetches Yahoo (CMP) and Google (P/E, Earnings) in parallel
@@ -172,6 +222,7 @@ portfolio-dashboard/
 6. **Rendering**: Components display updated portfolio with color-coded gains/losses
 
 ### Caching Strategy
+
 ```typescript
 // Cache structure
 {
@@ -182,6 +233,7 @@ portfolio-dashboard/
 ```
 
 ### Error Handling
+
 - If Yahoo Finance fails → Uses purchase price as fallback
 - If Google Finance fails → Shows "N/A" for P/E and earnings
 - If entire API fails → Shows error message with retry option
@@ -189,11 +241,13 @@ portfolio-dashboard/
 ## 🎨 UI Design Principles
 
 ### Color Coding
+
 - **Green**: Profit (positive gain/loss)
 - **Red**: Loss (negative gain/loss)
 - **Blue**: Informational (investment, present value)
 
 ### Responsive Breakpoints
+
 - Mobile: < 768px (stacked cards, horizontal scroll table)
 - Tablet: 768px - 1024px (2-column layout)
 - Desktop: > 1024px (3-column layout)
@@ -201,6 +255,7 @@ portfolio-dashboard/
 ## 🧪 Testing Recommendations
 
 ### Manual Testing
+
 1. Verify all stocks load correctly
 2. Check auto-refresh after 15 seconds
 3. Test manual refresh button
@@ -209,6 +264,7 @@ portfolio-dashboard/
 6. Verify error handling (disconnect internet)
 
 ### API Testing
+
 ```bash
 # Test API endpoint directly
 curl http://localhost:3000/api/stocks
@@ -217,11 +273,13 @@ curl http://localhost:3000/api/stocks
 ## ⚠️ Known Limitations
 
 ### Data Source Reliability
+
 - **Yahoo Finance**: Unofficial library, may break if Yahoo changes their API
 - **Google Finance**: Web scraping, may break if Google changes their HTML structure
 - **Rate Limits**: Excessive requests may result in temporary blocks
 
 ### Solutions Implemented
+
 - ✅ Caching to reduce API calls
 - ✅ Error handling with fallback values
 - ✅ User-friendly error messages
@@ -251,6 +309,7 @@ MIT License - feel free to use for learning and portfolio purposes.
 ## 👨‍💻 Author
 
 Built as a full-stack case study project demonstrating:
+
 - Modern React patterns (hooks, memoization)
 - TypeScript type safety
 - API integration (unofficial sources)
@@ -260,4 +319,6 @@ Built as a full-stack case study project demonstrating:
 ---
 
 **Note**: This project uses unofficial APIs and web scraping. For production use with real money, consider using official brokerage APIs or paid financial data providers.
-#
+#   O c t a - B y t e 
+ 
+ 
