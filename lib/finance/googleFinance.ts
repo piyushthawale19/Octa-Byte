@@ -17,8 +17,9 @@ function convertSymbolToGoogleFormat(symbol: string): string {
 export async function fetchGoogleFinanceData(
   symbol: string,
 ): Promise<GoogleFinanceData> {
+  const cacheKey = `google_${symbol}`;
+
   try {
-    const cacheKey = `google_${symbol}`;
     const cached = cache.get<GoogleFinanceData>(cacheKey);
     if (cached !== null) return cached;
 
