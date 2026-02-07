@@ -319,6 +319,4 @@ Built as a full-stack case study project demonstrating:
 ---
 
 **Note**: This project uses unofficial APIs and web scraping. For production use with real money, consider using official brokerage APIs or paid financial data providers.
-#   O c t a - B y t e 
- 
- 
+#
