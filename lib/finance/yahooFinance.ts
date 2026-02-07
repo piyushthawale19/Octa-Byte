@@ -3,8 +3,9 @@ const yahooFinance = new YahooFinance();
 import { cache } from "../utils/cache";
 
 export async function fetchCMP(symbol: string): Promise<number | null> {
+  const cacheKey = `yahoo_${symbol}`;
+
   try {
-    const cacheKey = `yahoo_${symbol}`;
     // Check cache first to avoid hitting rate limits
     const cached = cache.get<number>(cacheKey);
     if (cached !== null) return cached;
